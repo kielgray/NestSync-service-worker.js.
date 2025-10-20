@@ -28,11 +28,11 @@ self.addEventListener('push', (event) => {
   const title = data.title || 'Nestsync';
   const options = {
     body: data.body || 'You have a new notification',
-    icon: data.icon || '/icon-192x192.png', // Fallback icon path (ensure this path is accessible by your app)
-    badge: data.badge || '/badge-72x72.png', // Fallback badge path
-    data: data.data || {}, // Data to be passed to notificationclick handler
-    requireInteraction: false, // Notification dismisses automatically
-    tag: 'nestsync-notification' // Group similar notifications
+    icon: data.icon || '/icon-192x192.png',
+    badge: data.badge || '/badge-72x72.png',
+    data: data.data || {},
+    requireInteraction: false,
+    tag: 'nestsync-notification'
   };
 
   event.waitUntil(
@@ -42,22 +42,19 @@ self.addEventListener('push', (event) => {
 
 self.addEventListener('notificationclick', (event) => {
   console.log('Notification clicked:', event);
-  
   event.notification.close();
 
-  const urlToOpen = event.notification.data?.url || '/'; // Default to root if no URL specified
-  
+  const urlToOpen = event.notification.data?.url || '/';
+
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true })
       .then((clientList) => {
         for (let i = 0; i < clientList.length; i++) {
           const client = clientList[i];
-          // If a client (tab) with the URL is already open, focus it
           if (client.url.includes(urlToOpen) && 'focus' in client) {
             return client.focus();
           }
         }
-        // Otherwise, open a new window
         if (clients.openWindow) {
           return clients.openWindow(urlToOpen);
         }
