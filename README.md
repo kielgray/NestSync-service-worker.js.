@@ -1,2 +1,2 @@
-# NestSync-service-worker.js.
+# NestSync-service-worker
 service worker for nestsync APP 
